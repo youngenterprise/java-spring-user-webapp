@@ -44,21 +44,19 @@ public class UserController {
             model.addAttribute("pageTitle","Edit User (ID: "+id+")");
             return "user_form";
         } catch (UserNotFoundException e) {
-            ra.addFlashAttribute("message", "Error in getting user to edit");
+            ra.addFlashAttribute("message", e.getMessage());
             return "redirect:/users";
         }
     }
 
     @GetMapping("/users/delete/{id}")
-    public String deleteUser(@PathVariable("id") Integer id, Model model, RedirectAttributes ra){
+    public String deleteUser(@PathVariable("id") Integer id, RedirectAttributes ra){
         try {
-            User user = service.get(id);
-            model.addAttribute("user", user);
-            model.addAttribute("pageTitle","Edit User (ID: "+id+")");
-            return "user_form";
+            service.delete(id);
+            ra.addFlashAttribute("message", "the user ID "+id+" has been deleted");
         } catch (UserNotFoundException e) {
-            ra.addFlashAttribute("message", "Error in getting user to edit");
-            return "redirect:/users";
+            ra.addFlashAttribute("message", e.getMessage());
         }
+        return "redirect:/users";
     }
 }
