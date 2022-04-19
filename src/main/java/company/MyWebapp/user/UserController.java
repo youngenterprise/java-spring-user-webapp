@@ -25,6 +25,7 @@ public class UserController {
     @GetMapping("/users/new")
     public String showNewForm(Model model){
         model.addAttribute("user",new User());
+        model.addAttribute("pageTitle","Add new User");
         return "user_form";
     }
 
@@ -36,12 +37,28 @@ public class UserController {
     }
 
     @GetMapping("/users/edit/{id}")
-    public String showEditForm(@PathVariable("id") Integer id, Model model){
+    public String showEditForm(@PathVariable("id") Integer id, Model model, RedirectAttributes ra){
         try {
             User user = service.get(id);
             model.addAttribute("user", user);
+            model.addAttribute("pageTitle","Edit User (ID: "+id+")");
+            return "user_form";
         } catch (UserNotFoundException e) {
-            e.printStackTrace();
+            ra.addFlashAttribute("message", "Error in getting user to edit");
+            return "redirect:/users";
+        }
+    }
+
+    @GetMapping("/users/delete/{id}")
+    public String deleteUser(@PathVariable("id") Integer id, Model model, RedirectAttributes ra){
+        try {
+            User user = service.get(id);
+            model.addAttribute("user", user);
+            model.addAttribute("pageTitle","Edit User (ID: "+id+")");
+            return "user_form";
+        } catch (UserNotFoundException e) {
+            ra.addFlashAttribute("message", "Error in getting user to edit");
+            return "redirect:/users";
         }
     }
 }
